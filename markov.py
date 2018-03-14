@@ -43,15 +43,7 @@ def make_chains(text_string, n):
     words = text_string.split()
     words.append(None)
 
-    # for i in range(len(words)):
-    #     key = (words[i], words[i + 1])
-    #     if key in chains:
-    #         chains[key].append(words[i + 2])
-    #     else:
-    #         chains[key] = [words[i + 2]]
-
-    # return chains
-    for i in range(len(words) - n - 1):
+    for i in range(len(words) - n):
         key_list = []
         for j in range(i, i + n):
             key_list.append(words[j])
@@ -62,7 +54,6 @@ def make_chains(text_string, n):
             chains[key].append(words[i + n])
         else:
             chains[key] = [words[i + n]]
-
     return chains
 
 
@@ -71,19 +62,15 @@ def make_text(chains, n):
     words = []
     key = choice(chains.keys())
     word = choice(chains[key])
-
     for i in range(n):
         words.append(key[i])
     while word is not None:
-        for i in range(n):
-            words.append(word)
-            key_list = []
-            print i
-            for j in range(i, i + n):
-                key_list.append(words[j + 1])
-                print j
-            key = tuple(key_list)
+        words.append(word)
+        key = tuple(words[-n:])
+        if key in chains:
             word = choice(chains[key])
+        else:
+            word = None
     return " ".join(words)
 
 # Open the file and turn it into one long string

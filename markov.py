@@ -35,16 +35,29 @@ def make_chains(text_string, n):
     Each item in chains is a list of all possible following words:
 
         >>> chains[('hi', 'there')]
-        ['mary', 'juanita']   
+        ['mary', 'juanita']
         >>> chains[('there','juanita')]
         [None]
     """
     chains = {}
     words = text_string.split()
     words.append(None)
-    for i in range(len(words) - n):
-        #value_list = chains[(words[i], words[i + 1])]
-        key = (words[i], words[i + (n - 1)])
+
+    # for i in range(len(words)):
+    #     key = (words[i], words[i + 1])
+    #     if key in chains:
+    #         chains[key].append(words[i + 2])
+    #     else:
+    #         chains[key] = [words[i + 2]]
+
+    # return chains
+    for i in range(len(words) - n - 1):
+        key_list = []
+        for j in range(i, i + n):
+            key_list.append(words[j])
+
+        key = tuple(key_list)
+
         if key in chains:
             chains[key].append(words[i + n])
         else:
@@ -58,19 +71,26 @@ def make_text(chains, n):
     words = []
     key = choice(chains.keys())
     word = choice(chains[key])
+
     for i in range(n):
-        words.append(key[i - 1])
+        words.append(key[i])
     while word is not None:
         for i in range(n):
             words.append(word)
-            key = (key[i], word)
+            key_list = []
+            print i
+            for j in range(i, i + n):
+                key_list.append(words[j + 1])
+                print j
+            key = tuple(key_list)
             word = choice(chains[key])
     return " ".join(words)
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(argv[1])
-n = int(argv[2])
+
 # Get a Markov chain
+n = int(argv[2])
 chains = make_chains(input_text, n)
 
 # # Produce random text
